@@ -180,35 +180,42 @@ export function renderGrid() {
 export function renderConnectionsView() {
   const content = document.querySelector(".content");
   const { connections } = store.state;
+  const connectedCount = PLATFORMS.filter((p) => connections[p.id]?.connected).length;
 
   content.innerHTML = `
     <div class="section-head">
       <h1 class="section-head__title">Connections</h1>
-      <p class="section-head__sub">Manage which accounts OliExplore can collect from and publish to.</p>
+      <p class="section-head__sub">
+        Log in to link your social accounts. ${connectedCount} of ${PLATFORMS.length} connected —
+        only connected accounts can be collected from or published to.
+      </p>
     </div>
     <div class="connections">
       ${PLATFORMS.map((p) => {
         const c = connections[p.id] || {};
         const on = c.connected;
+        const identity = on
+          ? `Signed in as ${esc(c.displayName || c.handle || p.sampleHandle)}`
+          : "Not linked yet";
         return `
         <div class="conn-card">
           <div class="conn-card__top">
             <div class="conn-card__icon">${esc(p.glyph)}</div>
             <div>
               <div class="conn-card__name">${esc(p.name)}</div>
-              <div class="conn-card__handle">${esc(c.handle || p.sampleHandle)}</div>
+              <div class="conn-card__handle">${identity}</div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
             <span class="conn-card__status ${on ? "is-connected" : "is-disconnected"}">
               <span class="status-dot ${on ? "on" : ""}"></span>${on ? "Connected" : "Not connected"}
             </span>
-            <button class="btn ${on ? "btn--soft" : "btn--primary"} btn--sm" data-connect="${p.id}">
-              ${on ? "Disconnect" : "Connect"}
-            </button>
+            ${on
+              ? `<button class="btn btn--soft btn--sm" data-disconnect="${p.id}">Disconnect</button>`
+              : `<button class="btn btn--primary btn--sm" data-connect-open="${p.id}">Log in &amp; Connect</button>`}
           </div>
           <div style="margin-top:12px;font-size:12px;color:var(--text-faint);">
-            ${p.canCollect ? "Collect + Publish" : "Publish only"} · ${p.charLimit.toLocaleString()} char limit
+            ${on && c.connectedAt ? `Linked ${timeAgo(c.connectedAt)} · ` : ""}${p.canCollect ? "Collect + Publish" : "Publish only"} · ${p.charLimit.toLocaleString()} char limit
           </div>
         </div>`;
       }).join("")}

@@ -11,7 +11,12 @@ const STORAGE_KEY = "oliexplore.state.v1";
 const defaultState = () => ({
   posts: structuredClone(SEED_POSTS),
   connections: PLATFORMS.reduce((acc, p) => {
-    acc[p.id] = { connected: p.defaultConnected, handle: p.sampleHandle };
+    acc[p.id] = {
+      connected: p.defaultConnected,
+      handle: p.defaultConnected ? p.sampleHandle : null,
+      displayName: null,
+      connectedAt: p.defaultConnected ? Date.now() : null,
+    };
     return acc;
   }, {}),
   ui: {
@@ -98,11 +103,39 @@ class Store {
   }
 
   /* ---------- Connections ---------- */
+
+  /** Mark an account connected after a (simulated) successful login. */
+  connectAccount(platformId, account = {}) {
+    const c = this.state.connections[platformId];
+    if (!c) return;
+    this.state.connections[platformId] = {
+      connected: true,
+      handle: account.handle || c.handle,
+      displayName: account.displayName || account.handle || c.handle,
+      connectedAt: Date.now(),
+    };
+    this._emit();
+  }
+
+  /** Revoke access / log out of an account. */
+  disconnectAccount(platformId) {
+    const c = this.state.connections[platformId];
+    if (!c) return;
+    this.state.connections[platformId] = {
+      connected: false,
+      handle: null,
+      displayName: null,
+      connectedAt: null,
+    };
+    this._emit();
+  }
+
+  /** Legacy toggle kept for backward compatibility. */
   toggleConnection(platformId) {
     const c = this.state.connections[platformId];
     if (!c) return;
-    c.connected = !c.connected;
-    this._emit();
+    if (c.connected) this.disconnectAccount(platformId);
+    else this.connectAccount(platformId);
   }
 
   connectedPlatformIds() {

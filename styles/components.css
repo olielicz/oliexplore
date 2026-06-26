@@ -316,3 +316,43 @@
 .section-head { margin: 4px 0 18px; }
 .section-head__title { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.4px; }
 .section-head__sub { margin: 4px 0 0; color: var(--text-soft); font-size: 13.5px; }
+
+
+/* ---------- Connect / OAuth login modal ---------- */
+.auth { text-align: left; }
+.auth-brand {
+  display: flex; align-items: center; gap: 13px;
+  padding-bottom: 16px; margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.auth-brand__icon {
+  width: 48px; height: 48px; flex-shrink: 0;
+  border-radius: 13px; display: grid; place-items: center;
+  background: var(--ink); color: var(--white); font-weight: 700; font-size: 20px;
+}
+.auth-brand__title { font-weight: 700; font-size: 16px; color: var(--ink); }
+.auth-brand__sub { font-size: 12.5px; color: var(--text-faint); margin-top: 2px; }
+
+.scopes {
+  list-style: none; margin: 4px 0 14px; padding: 14px 16px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: flex; flex-direction: column; gap: 9px;
+}
+.scopes__head {
+  font-size: 11.5px; font-weight: 600; color: var(--text-soft);
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px;
+}
+.scopes li { display: flex; gap: 9px; font-size: 13.5px; color: var(--text); align-items: flex-start; }
+.scopes li .check { color: var(--black); font-weight: 800; }
+
+.auth-note { font-size: 11.5px; color: var(--text-faint); line-height: 1.5; margin: 0; }
+
+.auth-center { text-align: center; padding: 26px 8px 8px; }
+.auth-center .spinner { width: 30px; height: 30px; border-width: 3px; margin: 0 auto 16px; }
+.auth-center .auth-brand__sub { margin-top: 4px; }
+.auth-check {
+  width: 58px; height: 58px; margin: 0 auto 16px;
+  border-radius: 50%; background: var(--black); color: var(--white);
+  display: grid; place-items: center; font-size: 27px;
+}
