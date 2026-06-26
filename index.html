@@ -36,6 +36,9 @@
     </nav>
 
     <div class="sidebar__footer">
+      <button class="btn btn--light btn--block" id="connectAccountsBtn">
+        <span>⌁</span> Connect Accounts
+      </button>
       <button class="btn btn--ghost btn--block" id="collectBtn">
         <span>⤓</span> Collect New Posts
       </button>
@@ -119,6 +122,18 @@
         <button class="icon-btn" data-close-publish aria-label="Close">×</button>
       </header>
       <div class="modal__body" id="publishBody"></div>
+    </div>
+  </div>
+
+  <!-- ============ CONNECT / LOGIN MODAL ============ -->
+  <div class="modal" id="connectModal" aria-hidden="true">
+    <div class="modal__scrim" data-close-connect></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="connectTitle">
+      <header class="modal__head">
+        <h2 id="connectTitle" class="modal__title">Connect account</h2>
+        <button class="icon-btn" data-close-connect aria-label="Close">×</button>
+      </header>
+      <div class="modal__body" id="connectBody"></div>
     </div>
   </div>
 

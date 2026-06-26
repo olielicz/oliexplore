@@ -60,17 +60,27 @@ there when you come back.
 
 
 ----------------------------------------------------------
- 2. CONNECT YOUR ACCOUNTS
+ 2. LOG IN & CONNECT YOUR ACCOUNTS
 ----------------------------------------------------------
 
    1. Click "Connections" in the left sidebar.
    2. You will see cards for Facebook, Instagram, X, LinkedIn,
-      TikTok, and Threads.
-   3. Click "Connect" on each platform you want to use.
-      (Facebook and Instagram start connected by default.)
-   4. A green dot and "Connected" label confirm each link.
+      TikTok, and Threads. None are linked at first.
+   3. Click "Log in & Connect" on a platform.
+   4. A login window opens (just like signing in on that platform):
+        - Enter your account (email/username) and password.
+        - Review the permissions OliExplore is requesting.
+        - Click "Authorize & Connect".
+   5. After a short authorizing step, the account shows as
+      "Connected" with the handle you signed in as.
+   6. To unlink an account later, click "Disconnect" on its card.
 
-Tip: Only connected platforms can be collected from or published to.
+Tip: Only connected accounts can be collected from or published to.
+
+Note: This build SIMULATES the login/authorization so the full flow
+works offline. Your credentials are never sent anywhere or stored.
+Connecting to the real platforms uses their official OAuth sign-in
+(see README.md -> "Architecture notes").
 
 
 ----------------------------------------------------------

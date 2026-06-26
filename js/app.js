@@ -10,7 +10,7 @@
 
 import { store } from "./store.js";
 import { collectPosts } from "./services/collector.js";
-import { publishablePlatforms } from "./services/platforms.js";
+import { publishablePlatforms, platformById } from "./services/platforms.js";
 import {
   renderStats,
   renderChips,
@@ -22,6 +22,7 @@ import {
 } from "./ui/render.js";
 import { initEditor, openEditor } from "./ui/editor.js";
 import { initPublish, openPublish } from "./ui/publish.js";
+import { initConnect, openConnect } from "./ui/connect.js";
 import { toast } from "./ui/toast.js";
 
 /* ---------------- Render orchestration ---------------- */
@@ -147,6 +148,11 @@ function wireGlobalControls() {
   document.getElementById("collectBtn").addEventListener("click", handleCollect);
   document.getElementById("publishAllBtn").addEventListener("click", handlePublishAll);
 
+  // Connect Accounts shortcut -> Connections page
+  document.getElementById("connectAccountsBtn").addEventListener("click", () =>
+    setView("connections")
+  );
+
   // Mobile sidebar
   document.getElementById("menuToggle").addEventListener("click", () =>
     document.getElementById("sidebar").classList.toggle("is-open")
@@ -163,16 +169,17 @@ function wireDelegation() {
       return;
     }
 
-    // Connection connect/disconnect
-    const conn = e.target.closest("[data-connect]");
-    if (conn) {
-      store.toggleConnection(conn.dataset.connect);
-      const id = conn.dataset.connect;
-      toast(
-        store.state.connections[id].connected ? "Account connected ✓" : "Account disconnected",
-        "info"
-      );
-      render();
+    // Connection: open login flow / disconnect
+    const openConn = e.target.closest("[data-connect-open]");
+    if (openConn) {
+      openConnect(openConn.dataset.connectOpen);
+      return;
+    }
+    const disConn = e.target.closest("[data-disconnect]");
+    if (disConn) {
+      const id = disConn.dataset.disconnect;
+      store.disconnectAccount(id);
+      toast(`${platformById(id)?.name || "Account"} disconnected`, "info");
       return;
     }
 
@@ -196,6 +203,7 @@ function init() {
 
   initEditor({ onPublish: (id) => openPublish(id) });
   initPublish();
+  initConnect();
 
   wireGlobalControls();
   wireDelegation();
