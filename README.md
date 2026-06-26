@@ -6,7 +6,7 @@ catchier, quirkier versions, and lets you **publish to every connected platform 
 It's built as a **zero-dependency, no-build single-page app** (vanilla JS + CSS). Just open it in
 a browser — nothing to install.
 
-**🔗 Live demo:** https://olielicz.github.io/oliexplore/ (auto-deployed from `main` via GitHub Pages)
+**🔗 Live demo:** https://olielicz.github.io/oliexplore/ (served by GitHub Pages from the `main` branch)
 
 ---
 
