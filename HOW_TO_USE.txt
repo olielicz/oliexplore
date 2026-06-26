@@ -1,0 +1,178 @@
+==========================================================
+ OliExplore — Step-by-Step User Guide
+ Collect → Recycle → Publish, across every platform.
+==========================================================
+
+OliExplore helps you take posts you already have on Facebook and
+Instagram, rewrite them to be catchier and quirkier, and publish them to
+all your social platforms with a single click.
+
+This guide walks you through everything from launching the app to
+publishing your first recycled post.
+
+
+----------------------------------------------------------
+ 0. LAUNCH THE APP
+----------------------------------------------------------
+
+The app is a zero-install web app. There is nothing to build.
+
+Option A — Run with Python (recommended):
+   1. Open a terminal.
+   2. Go into the project folder:
+         cd oliexplore
+   3. Start a local web server:
+         python3 -m http.server 8000
+   4. Open your browser to:
+         http://localhost:8000
+
+Option B — Run with Node:
+   1. cd oliexplore
+   2. npx serve .   (or any static file server)
+   3. Open the URL it prints.
+
+NOTE: Open it over http:// (not by double-clicking the file). The app
+uses JavaScript modules, which browsers only load from a web address.
+
+
+----------------------------------------------------------
+ 1. GET ORIENTED
+----------------------------------------------------------
+
+When the app opens you will see:
+
+   - LEFT SIDEBAR: navigation
+        * Content Library  -> every collected post
+        * Recycled         -> posts you have rewritten
+        * Published        -> posts already pushed live
+        * Connections      -> your linked social accounts
+        * "Collect New Posts" button at the bottom
+
+   - TOP BAR: the search box and the "Publish to All" button.
+
+   - STATS ROW: quick counts (Collected, Recycled, Published, Reach).
+
+   - POST GRID: cards for each post with its platform, engagement
+        numbers, and action buttons.
+
+The app remembers everything in your browser, so your library is still
+there when you come back.
+
+
+----------------------------------------------------------
+ 2. CONNECT YOUR ACCOUNTS
+----------------------------------------------------------
+
+   1. Click "Connections" in the left sidebar.
+   2. You will see cards for Facebook, Instagram, X, LinkedIn,
+      TikTok, and Threads.
+   3. Click "Connect" on each platform you want to use.
+      (Facebook and Instagram start connected by default.)
+   4. A green dot and "Connected" label confirm each link.
+
+Tip: Only connected platforms can be collected from or published to.
+
+
+----------------------------------------------------------
+ 3. COLLECT POSTS FROM FACEBOOK & INSTAGRAM
+----------------------------------------------------------
+
+   1. Click "Collect New Posts" at the bottom of the sidebar.
+   2. The app pulls recent posts from your connected accounts.
+   3. A message confirms how many new posts were added.
+   4. The new posts appear at the top of your Content Library.
+
+Your library already comes pre-loaded with sample posts so you can try
+everything right away.
+
+
+----------------------------------------------------------
+ 4. FIND A POST WITH SEARCH
+----------------------------------------------------------
+
+   1. Click the search box at the top.
+   2. Type any keyword, hashtag, author, or platform name
+         (for example: "coffee", "sale", "instagram").
+   3. The grid filters instantly as you type.
+   4. Click the "x" in the search box to clear it.
+
+You can also:
+   - Click a platform chip (All / Facebook / Instagram / ...) to filter.
+   - Use the "Sort" dropdown (Most recent, Top engagement, Recycled first).
+
+
+----------------------------------------------------------
+ 5. RECYCLE A POST (MAKE IT CATCHY & QUIRKY)
+----------------------------------------------------------
+
+   1. On any post card, click "Recycle & Edit".
+   2. A panel slides in from the right with the caption.
+   3. Pick a vibe: Catchy, Quirky, Punchy, Friendly, or Professional.
+   4. Click "Recycle this post".
+        -> The caption is rewritten with a hook, emoji, punchier
+           wording, and a fun sign-off. Fresh hashtags are suggested.
+   5. Not happy with it? Click "Re-roll variant" for a new version.
+   6. Edit anything by hand in the caption or hashtags boxes.
+        - The live preview shows exactly how it will look.
+        - The character counter warns you if it is too long.
+   7. Click "✨ Suggest hashtags" to auto-add relevant tags.
+   8. When done:
+        - "Save changes" to keep it in your library, OR
+        - "Save & Publish ->" to go straight to publishing.
+
+Recycled posts get a "Recycled" badge and show up in the Recycled tab.
+
+
+----------------------------------------------------------
+ 6. PUBLISH TO ALL PLATFORMS (ONE CLICK)
+----------------------------------------------------------
+
+There are two ways to publish:
+
+   A) From a post card: click the "Publish" button.
+   B) From the top bar: click "Publish to All"
+        (this grabs your top recycled post automatically).
+
+Then:
+   1. A window opens listing every connected platform, all switched ON.
+   2. Toggle OFF any platform you want to skip.
+        - If a caption is too long for a platform, that platform is
+          flagged and skipped automatically.
+   3. Click "Publish now".
+   4. Watch the live progress list as each platform completes.
+   5. A confirmation tells you how many platforms went live.
+   6. Click "Done".
+
+Published posts get a "Published" badge and appear in the Published tab.
+
+
+----------------------------------------------------------
+ 7. TYPICAL WORKFLOW (THE SHORT VERSION)
+----------------------------------------------------------
+
+   1. Collect New Posts.
+   2. Search for the post you want.
+   3. Recycle & Edit -> pick a vibe -> Recycle.
+   4. Save & Publish -> confirm platforms -> Publish now.
+   Done. Your refreshed post is live everywhere.
+
+
+----------------------------------------------------------
+ 8. GOOD TO KNOW
+----------------------------------------------------------
+
+   - Everything is saved in your browser (localStorage). Clearing your
+     browser data will reset the app to its starting sample posts.
+   - The app works on mobile too; tap the menu icon to open the sidebar.
+   - To reset to a clean slate, clear this site's data in your browser
+     settings.
+
+   - LIVE INTEGRATION NOTE: This build ships with simulated platform
+     connections so the full workflow works offline. Connecting to the
+     real Facebook, Instagram, X, etc. APIs requires each platform's
+     developer credentials and approval. The code is already structured
+     for this (see README.md -> "Architecture notes").
+
+==========================================================
+ Enjoy using OliExplore!
+==========================================================

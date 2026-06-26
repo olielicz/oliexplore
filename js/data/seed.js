@@ -1,0 +1,200 @@
+/* =====================================================================
+   seed.js — Initial library of "collected" posts.
+
+   In production these would arrive from the Facebook Graph API and the
+   Instagram Graph API via collector.js. Here we ship a realistic seed
+   set so the app is useful on first load and offline.
+
+   Post shape:
+   {
+     id, platform, author, caption, hashtags[], mediaEmoji, mediaTone,
+     likes, comments, shares, collectedAt, recycled(bool),
+     published(bool), publishedTo[], originalCaption
+   }
+   ===================================================================== */
+
+const day = 86400000;
+const now = Date.now();
+
+export const SEED_POSTS = [
+  {
+    id: "seed-fb-1",
+    platform: "facebook",
+    author: "OliExplore",
+    caption:
+      "We just launched our summer collection. Lightweight fabrics, neutral tones, made for everyday wear. Available now in store and online.",
+    hashtags: ["summer", "fashion", "newdrop"],
+    mediaEmoji: "🧥",
+    mediaTone: "#2b2c30",
+    likes: 842,
+    comments: 37,
+    shares: 21,
+    collectedAt: now - day * 1,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
+  {
+    id: "seed-ig-1",
+    platform: "instagram",
+    author: "oli.explore",
+    caption:
+      "Morning coffee and a good plan. What are you building today? Drop it in the comments.",
+    hashtags: ["coffee", "mondaymotivation", "worklife"],
+    mediaEmoji: "☕",
+    mediaTone: "#3a3c41",
+    likes: 1503,
+    comments: 96,
+    shares: 12,
+    collectedAt: now - day * 2,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
+  {
+    id: "seed-ig-2",
+    platform: "instagram",
+    author: "oli.explore",
+    caption:
+      "Behind the scenes of our latest photoshoot. So much work goes into a single frame.",
+    hashtags: ["bts", "photography", "studio"],
+    mediaEmoji: "📸",
+    mediaTone: "#16171a",
+    likes: 2210,
+    comments: 154,
+    shares: 48,
+    collectedAt: now - day * 3,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
+  {
+    id: "seed-fb-2",
+    platform: "facebook",
+    author: "OliExplore",
+    caption:
+      "Customer story: how Maya used our planner to organize her small business. Read the full interview on our blog.",
+    hashtags: ["customerstory", "smallbusiness", "productivity"],
+    mediaEmoji: "📓",
+    mediaTone: "#232427",
+    likes: 410,
+    comments: 19,
+    shares: 33,
+    collectedAt: now - day * 4,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
+  {
+    id: "seed-ig-3",
+    platform: "instagram",
+    author: "oli.explore",
+    caption:
+      "Five tips for taking better phone photos. Save this for later and let us know which one helped most.",
+    hashtags: ["phototips", "tutorial", "creators"],
+    mediaEmoji: "💡",
+    mediaTone: "#3a3c41",
+    likes: 3320,
+    comments: 211,
+    shares: 187,
+    collectedAt: now - day * 5,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
+  {
+    id: "seed-fb-3",
+    platform: "facebook",
+    author: "OliExplore",
+    caption:
+      "Weekend sale starts now. Up to 30 percent off selected items. Limited stock, so don't wait too long.",
+    hashtags: ["sale", "weekend", "deals"],
+    mediaEmoji: "🏷️",
+    mediaTone: "#2b2c30",
+    likes: 980,
+    comments: 64,
+    shares: 72,
+    collectedAt: now - day * 6,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
+  {
+    id: "seed-ig-4",
+    platform: "instagram",
+    author: "oli.explore",
+    caption:
+      "A quiet workspace makes a big difference. Here is how we set up our desk for deep focus.",
+    hashtags: ["workspace", "focus", "minimal"],
+    mediaEmoji: "🖥️",
+    mediaTone: "#16171a",
+    likes: 1875,
+    comments: 88,
+    shares: 41,
+    collectedAt: now - day * 7,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
+  {
+    id: "seed-fb-4",
+    platform: "facebook",
+    author: "OliExplore",
+    caption:
+      "Thank you for 50,000 followers. We are grateful for this community and excited for what comes next.",
+    hashtags: ["milestone", "community", "thankyou"],
+    mediaEmoji: "🎉",
+    mediaTone: "#232427",
+    likes: 5120,
+    comments: 402,
+    shares: 96,
+    collectedAt: now - day * 8,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
+];
+
+/* A pool used by the collector to simulate "fetching new posts". */
+export const COLLECT_POOL = [
+  {
+    platform: "instagram",
+    author: "oli.explore",
+    caption: "New recipe drop: a 10 minute breakfast bowl that actually keeps you full.",
+    hashtags: ["recipe", "breakfast", "healthy"],
+    mediaEmoji: "🥣",
+    mediaTone: "#3a3c41",
+  },
+  {
+    platform: "facebook",
+    author: "OliExplore",
+    caption: "We are hiring a community manager. Remote friendly. Link to apply in the comments.",
+    hashtags: ["hiring", "remote", "jobs"],
+    mediaEmoji: "💼",
+    mediaTone: "#2b2c30",
+  },
+  {
+    platform: "instagram",
+    author: "oli.explore",
+    caption: "Sunset walks hit different in autumn. Where is your favorite place to unwind?",
+    hashtags: ["autumn", "outdoors", "mood"],
+    mediaEmoji: "🍂",
+    mediaTone: "#16171a",
+  },
+  {
+    platform: "facebook",
+    author: "OliExplore",
+    caption: "Quick poll: morning person or night owl? We are split in the office right now.",
+    hashtags: ["poll", "community", "fun"],
+    mediaEmoji: "🌙",
+    mediaTone: "#232427",
+  },
+  {
+    platform: "instagram",
+    author: "oli.explore",
+    caption: "Three books that changed how we think about design. Full list on the blog.",
+    hashtags: ["books", "design", "reading"],
+    mediaEmoji: "📚",
+    mediaTone: "#3a3c41",
+  },
+];
