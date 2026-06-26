@@ -148,6 +148,11 @@ function wireGlobalControls() {
   document.getElementById("collectBtn").addEventListener("click", handleCollect);
   document.getElementById("publishAllBtn").addEventListener("click", handlePublishAll);
 
+  // Connect Accounts shortcut -> Connections page
+  document.getElementById("connectAccountsBtn").addEventListener("click", () =>
+    setView("connections")
+  );
+
   // Mobile sidebar
   document.getElementById("menuToggle").addEventListener("click", () =>
     document.getElementById("sidebar").classList.toggle("is-open")
