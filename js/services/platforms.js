@@ -33,6 +33,15 @@ export const PLATFORMS = [
         "View post engagement insights",
       ],
     },
+    // Real OAuth wiring. Facebook + Instagram share one Meta app (App ID).
+    // Docs: https://developers.facebook.com/docs/facebook-login/guides/access-tokens
+    oauth: {
+      clientIdField: "facebook",
+      authorizeUrl: "https://www.facebook.com/v21.0/dialog/oauth",
+      scope: "pages_show_list,pages_read_engagement,pages_manage_posts,read_insights",
+      clientIdParam: "client_id",
+      pkce: false,
+    },
   },
   {
     id: "instagram",
@@ -52,6 +61,16 @@ export const PLATFORMS = [
         "Publish photos and reels",
         "View basic profile information",
       ],
+    },
+    // Instagram (business/creator) publishing goes through the Instagram
+    // Graph API, authorized via the same Meta app as Facebook.
+    // Docs: https://developers.facebook.com/docs/instagram-platform
+    oauth: {
+      clientIdField: "facebook",
+      authorizeUrl: "https://www.facebook.com/v21.0/dialog/oauth",
+      scope: "instagram_basic,instagram_content_publish,pages_show_list",
+      clientIdParam: "client_id",
+      pkce: false,
     },
   },
   {
@@ -73,6 +92,15 @@ export const PLATFORMS = [
         "Read your profile information",
       ],
     },
+    // X API v2 OAuth 2.0 (user context) — PKCE is mandatory.
+    // Docs: https://docs.x.com/resources/fundamentals/authentication/oauth-2-0/authorization-code
+    oauth: {
+      clientIdField: "x",
+      authorizeUrl: "https://twitter.com/i/oauth2/authorize",
+      scope: "tweet.read tweet.write users.read offline.access",
+      clientIdParam: "client_id",
+      pkce: true,
+    },
   },
   {
     id: "linkedin",
@@ -92,6 +120,8 @@ export const PLATFORMS = [
         "Read your basic profile",
       ],
     },
+    // Not wired to a live proxy endpoint yet — demo mode only for now.
+    oauth: null,
   },
   {
     id: "tiktok",
@@ -112,6 +142,17 @@ export const PLATFORMS = [
         "Read your profile information",
       ],
     },
+    // TikTok uses "client_key" (not "client_id") and its own domain.
+    // Docs: https://developers.tiktok.com/doc/oauth-user-access-token-management
+    // NOTE: unaudited apps can only publish videos in PRIVATE viewing mode
+    // (TikTok policy) — see server/README.md for details.
+    oauth: {
+      clientIdField: "tiktok",
+      authorizeUrl: "https://www.tiktok.com/v2/auth/authorize/",
+      scope: "user.info.basic,video.publish,video.list",
+      clientIdParam: "client_key",
+      pkce: true,
+    },
   },
   {
     id: "threads",
@@ -119,7 +160,7 @@ export const PLATFORMS = [
     short: "th",
     glyph: "@",
     charLimit: 500,
-    canCollect: false,
+    canCollect: true,
     canPublish: true,
     defaultConnected: false,
     sampleHandle: "@oli.explore",
@@ -127,9 +168,20 @@ export const PLATFORMS = [
       loginLabel: "Username or email",
       loginPlaceholder: "yourusername",
       scopes: [
+        "Read your recent threads",
         "Publish threads on your behalf",
         "Read your profile information",
       ],
+    },
+    // Threads has its own app product/App ID in the Meta dashboard,
+    // separate from a regular Facebook app.
+    // Docs: https://developers.facebook.com/docs/threads
+    oauth: {
+      clientIdField: "threads",
+      authorizeUrl: "https://threads.net/oauth/authorize",
+      scope: "threads_basic,threads_content_publish",
+      clientIdParam: "client_id",
+      pkce: false,
     },
   },
 ];

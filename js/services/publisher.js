@@ -1,16 +1,16 @@
 /* =====================================================================
    publisher.js — Publishes a post to one or many platforms at once.
 
-   ADAPTER PATTERN (mirrors collector.js)
-   --------------------------------------
-   Each platform exposes an async `publish(payload)` adapter that
-   resolves with a result object. Today they simulate network latency
-   and return a fake permalink. To go live, replace an adapter body
-   with the real call, e.g.:
-
-     facebook:  POST /{page-id}/feed
-     instagram: POST /{ig-user-id}/media  +  /media_publish
-     x:         POST /2/tweets
+   LIVE vs. MOCK (mirrors collector.js)
+   -------------------------------------
+   For each selected platform, this checks for a real live access token
+   (services/config.js). If present, it publishes for real through your
+   proxy — e.g. Facebook POST /{page-id}/feed, Instagram's two-step
+   /media + /media_publish, X POST /2/tweets, TikTok's Content Posting
+   API POST /v2/post/publish/video/init/, Threads POST
+   /{threads-user-id}/threads + /threads_publish. Otherwise it uses the
+   mock adapter below, which simulates latency and returns a fake
+   permalink so the app works fully offline.
 
    `publishToAll` runs every selected platform concurrently and reports
    progress per-platform via an optional callback, so the UI can show a
@@ -18,6 +18,8 @@
    ===================================================================== */
 
 import { platformById } from "./platforms.js";
+import { hasLiveToken } from "./config.js";
+import { publishReal, LiveApiError } from "./liveApi.js";
 
 const wait = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -26,8 +28,10 @@ function fakePermalink(platformId) {
   return `https://${platformId}.example/p/${slug}`;
 }
 
-/* Per-platform publish adapters (mocked). */
-const adapters = {
+/* Per-platform mock publish adapters — used whenever a platform isn't
+   connected with a real live token. Kept exactly as before so demo
+   mode behaves identically to earlier releases. */
+const mockAdapters = {
   async facebook(p) { await wait(700); return { ok: true, url: fakePermalink("facebook") }; },
   async instagram(p) { await wait(900); return { ok: true, url: fakePermalink("instagram") }; },
   async x(p) { await wait(550); return { ok: true, url: fakePermalink("x") }; },
@@ -35,6 +39,20 @@ const adapters = {
   async tiktok(p) { await wait(1000); return { ok: true, url: fakePermalink("tiktok") }; },
   async threads(p) { await wait(600); return { ok: true, url: fakePermalink("threads") }; },
 };
+
+/* Real publish adapter — routes through the user's proxy and their
+   stored access token. Shared across every live-capable platform
+   since liveApi.js already namespaces the request by platform id. */
+async function liveAdapter(platformId, payload) {
+  try {
+    const res = await publishReal(platformId, payload);
+    if (res.ok) return { ok: true, url: res.url || null };
+    return { ok: false, reason: res.reason || "Publish failed" };
+  } catch (err) {
+    const reason = err instanceof LiveApiError ? err.message : "Live publish failed";
+    return { ok: false, reason };
+  }
+}
 
 /**
  * Validate a caption against a platform's character limit.
@@ -68,8 +86,13 @@ export async function publishToAll(payload, platformIds, onProgress = () => {}) 
     }
 
     try {
-      const adapter = adapters[id];
-      const res = adapter ? await adapter(payload) : { ok: false };
+      let res;
+      if (hasLiveToken(id)) {
+        res = await liveAdapter(id, payload);
+      } else {
+        const adapter = mockAdapters[id];
+        res = adapter ? await adapter(payload) : { ok: false, reason: "No adapter for platform" };
+      }
       onProgress(id, res.ok ? "done" : "error", res);
       return { platform: id, ...res };
     } catch (err) {

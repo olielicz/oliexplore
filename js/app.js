@@ -23,6 +23,8 @@ import {
 import { initEditor, openEditor } from "./ui/editor.js";
 import { initPublish, openPublish } from "./ui/publish.js";
 import { initConnect, openConnect } from "./ui/connect.js";
+import { initSettings, openSettings } from "./ui/settings.js";
+import { clearToken } from "./services/config.js";
 import { toast } from "./ui/toast.js";
 
 /* ---------------- Render orchestration ---------------- */
@@ -79,7 +81,9 @@ async function handleCollect() {
   btn.innerHTML = `<span>⏳</span> Collecting…`;
 
   try {
-    const fresh = await collectPosts(connected);
+    const fresh = await collectPosts(connected, (id, message) => {
+      toast(message, "error", 5000);
+    });
     const added = store.addPosts(fresh);
     toast(
       added ? `Collected ${added} new post${added === 1 ? "" : "s"} ⤓` : "No new posts right now.",
@@ -161,6 +165,9 @@ function wireGlobalControls() {
     setView("connections")
   );
 
+  // Live API Settings
+  document.getElementById("settingsBtn").addEventListener("click", () => openSettings());
+
   // Mobile sidebar
   document.getElementById("menuToggle").addEventListener("click", () =>
     document.getElementById("sidebar").classList.toggle("is-open")
@@ -187,6 +194,7 @@ function wireDelegation() {
     if (disConn) {
       const id = disConn.dataset.disconnect;
       store.disconnectAccount(id);
+      clearToken(id);
       toast(`${platformById(id)?.name || "Account"} disconnected`, "info");
       return;
     }
@@ -212,6 +220,7 @@ function init() {
   initEditor({ onPublish: (id) => openPublish(id) });
   initPublish();
   initConnect();
+  initSettings();
 
   wireGlobalControls();
   wireDelegation();
