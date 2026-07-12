@@ -11,6 +11,8 @@
 import { store } from "./store.js";
 import { collectPosts } from "./services/collector.js";
 import { publishablePlatforms, platformById } from "./services/platforms.js";
+import { getSuggestions, highlightMatch } from "./services/searchIndex.js";
+import { esc } from "./ui/util.js";
 import {
   renderStats,
   renderChips,
@@ -118,33 +120,146 @@ function handlePublishAll() {
   openPublish(target.id);
 }
 
-/* ---------------- Event wiring ---------------- */
+/* ---------------- Search + live autocomplete ---------------- */
 
-function wireGlobalControls() {
-  // Search
+/**
+ * Wires the search box: debounced filtering (fast typing stays smooth)
+ * plus a live dropdown of matching keywords/hashtags/platforms/authors
+ * built from whatever's actually in the library right now. Fully
+ * keyboard-navigable (Up/Down/Enter/Escape) and mouse-clickable.
+ */
+function wireSearch() {
   const search = document.getElementById("searchInput");
   const clear = document.getElementById("searchClear");
+  const suggestBox = document.getElementById("searchSuggest");
+
   search.value = store.state.ui.query;
   clear.hidden = !search.value;
 
-  // Debounce the search-driven re-render: filtering/sorting/rebuilding
-  // the whole grid on every keystroke is wasted work while the user is
-  // still typing. The input itself stays instantly responsive (native
-  // <input>), only the expensive store update + grid rebuild is delayed.
   let searchDebounce = null;
-  search.addEventListener("input", () => {
-    clear.hidden = !search.value;
-    const value = search.value;
+  let items = [];
+  let activeIndex = -1;
+
+  const typeIcon = { platform: "⌁", hashtag: "#", author: "@", keyword: "⌕" };
+
+  function closeSuggestions() {
+    suggestBox.hidden = true;
+    suggestBox.innerHTML = "";
+    search.setAttribute("aria-expanded", "false");
+    activeIndex = -1;
+    items = [];
+  }
+
+  function commitQuery(value) {
+    clear.hidden = !value;
     if (searchDebounce) clearTimeout(searchDebounce);
     searchDebounce = setTimeout(() => store.setUI({ query: value }), 150);
+  }
+
+  function renderSuggestions(query) {
+    items = getSuggestions(query, 8);
+    if (!items.length) {
+      closeSuggestions();
+      return;
+    }
+    activeIndex = -1;
+    suggestBox.innerHTML = items
+      .map(
+        (item, i) => `
+        <button type="button" class="search-suggest__item" role="option" data-index="${i}" id="suggest-${i}">
+          <span class="search-suggest__icon search-suggest__icon--${item.type}">${typeIcon[item.type]}</span>
+          <span class="search-suggest__label">${highlightMatch(esc(item.label), esc(query))}</span>
+          ${item.sub ? `<span class="search-suggest__sub">${esc(item.sub)}</span>` : ""}
+        </button>`
+      )
+      .join("");
+    suggestBox.hidden = false;
+    search.setAttribute("aria-expanded", "true");
+  }
+
+  function pick(index) {
+    const item = items[index];
+    if (!item) return;
+    search.value = item.value;
+    commitQuery(item.value);
+    // Fire the store update immediately on explicit selection instead
+    // of waiting out the debounce, so picking a suggestion feels instant.
+    if (searchDebounce) clearTimeout(searchDebounce);
+    store.setUI({ query: item.value });
+    clear.hidden = false;
+    closeSuggestions();
+  }
+
+  function setActive(index) {
+    const nodes = suggestBox.querySelectorAll(".search-suggest__item");
+    nodes.forEach((n) => n.classList.remove("is-active"));
+    if (index >= 0 && nodes[index]) {
+      nodes[index].classList.add("is-active");
+      nodes[index].scrollIntoView({ block: "nearest" });
+      search.setAttribute("aria-activedescendant", `suggest-${index}`);
+    } else {
+      search.removeAttribute("aria-activedescendant");
+    }
+    activeIndex = index;
+  }
+
+  search.addEventListener("input", () => {
+    const value = search.value;
+    clear.hidden = !value;
+    commitQuery(value);
+    renderSuggestions(value);
   });
+
+  search.addEventListener("focus", () => {
+    if (search.value) renderSuggestions(search.value);
+  });
+
+  search.addEventListener("keydown", (e) => {
+    if (suggestBox.hidden) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActive(Math.min(activeIndex + 1, items.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActive(Math.max(activeIndex - 1, 0));
+    } else if (e.key === "Enter") {
+      if (activeIndex >= 0) {
+        e.preventDefault();
+        pick(activeIndex);
+      } else {
+        closeSuggestions();
+      }
+    } else if (e.key === "Escape") {
+      closeSuggestions();
+    }
+  });
+
+  suggestBox.addEventListener("mousedown", (e) => {
+    // mousedown (not click) so this fires before the input's blur.
+    const btn = e.target.closest(".search-suggest__item");
+    if (!btn) return;
+    e.preventDefault();
+    pick(Number(btn.dataset.index));
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("#searchWrap")) closeSuggestions();
+  });
+
   clear.addEventListener("click", () => {
     if (searchDebounce) clearTimeout(searchDebounce);
     search.value = "";
     clear.hidden = true;
     store.setUI({ query: "" });
+    closeSuggestions();
     search.focus();
   });
+}
+
+/* ---------------- Event wiring ---------------- */
+
+function wireGlobalControls() {
+  wireSearch();
 
   // Sort
   const sort = document.getElementById("sortSelect");

@@ -55,7 +55,7 @@
     <header class="topbar">
       <button class="icon-btn topbar__menu" id="menuToggle" aria-label="Toggle menu">≡</button>
 
-      <div class="search">
+      <div class="search" id="searchWrap">
         <span class="search__icon" aria-hidden="true">⌕</span>
         <input
           type="search"
@@ -64,8 +64,13 @@
           placeholder="Search posts by keyword, hashtag, or platform…"
           autocomplete="off"
           aria-label="Search posts"
+          role="combobox"
+          aria-expanded="false"
+          aria-controls="searchSuggest"
+          aria-autocomplete="list"
         />
         <button class="search__clear" id="searchClear" aria-label="Clear search" hidden>×</button>
+        <div class="search-suggest" id="searchSuggest" role="listbox" hidden></div>
       </div>
 
       <div class="topbar__actions">

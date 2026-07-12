@@ -27,7 +27,9 @@ export function visiblePosts() {
     list = list.filter((p) => p.platform === ui.platformFilter);
   }
 
-  const q = ui.query.trim().toLowerCase();
+  // Strip a leading "#" or "@" so searching "#travel" or "@handle"
+  // matches the same way as searching "travel" or "handle" would.
+  const q = ui.query.trim().toLowerCase().replace(/^[#@]/, "");
   if (q) {
     list = list.filter((p) => {
       const hay = [
@@ -36,6 +38,7 @@ export function visiblePosts() {
         p.platform,
         platformById(p.platform)?.name || "",
         ...(p.hashtags || []),
+        ...(p.hashtags || []).map((t) => `#${t}`),
       ]
         .join(" ")
         .toLowerCase();
