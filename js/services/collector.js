@@ -43,16 +43,24 @@ function normalize(raw) {
   };
 }
 
-/* Per-platform collection adapters (mocked). */
+/* Per-platform collection adapters (mocked).
+   Each platform shares the same lightweight lookup against the local
+   pool — this keeps the adapter set easy to extend (just add platform
+   posts to COLLECT_POOL) and avoids duplicating the same four lines
+   per platform. Simulated latency varies slightly per platform so the
+   "Collect New Posts" progress feels realistic. */
+function poolAdapter(platformId, latencyMs) {
+  return async function collect() {
+    await wait(latencyMs);
+    return COLLECT_POOL.filter((p) => p.platform === platformId);
+  };
+}
+
 const adapters = {
-  async facebook() {
-    await wait(400);
-    return COLLECT_POOL.filter((p) => p.platform === "facebook");
-  },
-  async instagram() {
-    await wait(450);
-    return COLLECT_POOL.filter((p) => p.platform === "instagram");
-  },
+  facebook: poolAdapter("facebook", 400),
+  instagram: poolAdapter("instagram", 450),
+  tiktok: poolAdapter("tiktok", 500),
+  x: poolAdapter("x", 350),
 };
 
 /**

@@ -78,7 +78,9 @@ function renderBody() {
     </div>
 
     <div class="field">
-      <span class="field__label">Live preview</span>
+      <span class="field__label">Suggested recycled post</span>
+      <p class="field__hint">Exactly what will go out — the mockup shows how it will look on ${esc(plat?.name || current.platform)}, the box below shows the raw text that gets published.</p>
+      <div class="post-suggestion" id="postSuggestion"></div>
       <div class="preview" id="preview"></div>
     </div>
 
@@ -103,6 +105,7 @@ function renderBody() {
   wireBody();
   updatePreview();
   updateCounter();
+  renderSuggestion();
 }
 
 function wireBody() {
@@ -113,11 +116,13 @@ function wireBody() {
     current.caption = cap.value;
     updatePreview();
     updateCounter();
+    renderSuggestion();
   });
   tags.addEventListener("input", () => {
     current.hashtags = parseTags(tags.value);
     updatePreview();
     updateCounter();
+    renderSuggestion();
   });
 
   document.getElementById("toneRow").addEventListener("click", (e) => {
@@ -152,6 +157,7 @@ function applyRecycle(reroll = false) {
   document.getElementById("tagsInput").value = current.hashtags.join(" ");
   updatePreview();
   updateCounter();
+  renderSuggestion();
   toast(reroll ? "Spun up a fresh variant 🎲" : `Recycled into “${activeTone}” tone ↻`, "success");
 }
 
@@ -159,7 +165,36 @@ function suggest() {
   current.hashtags = suggestHashtags(current.caption, current.hashtags, 6);
   document.getElementById("tagsInput").value = current.hashtags.join(" ");
   updatePreview();
+  renderSuggestion();
   toast("Added suggested hashtags ✨", "info");
+}
+
+/* Render a concrete "here's exactly what will be posted" mockup: a
+   platform-styled card (author, caption with line breaks preserved,
+   hashtags as pills, and simulated engagement) so the user can see the
+   suggested recycled post's look before publishing it anywhere. */
+function renderSuggestion() {
+  const host = document.getElementById("postSuggestion");
+  if (!host) return;
+  const plat = platformById(current.platform);
+  const captionHtml = esc(current.caption).replace(/\n/g, "<br>");
+  const tagsHtml = (current.hashtags || [])
+    .map((t) => `<span class="post-suggestion__tag">#${esc(t)}</span>`)
+    .join("");
+
+  host.innerHTML = `
+    <div class="post-suggestion__head">
+      <span class="post-suggestion__icon">${esc(plat?.glyph || "?")}</span>
+      <span class="post-suggestion__author">@${esc(current.author)}</span>
+      <span class="post-suggestion__platform">${esc(plat?.name || current.platform)}</span>
+    </div>
+    <div class="post-suggestion__body">${captionHtml || "<em>Nothing to preview yet — write or recycle a caption.</em>"}</div>
+    ${tagsHtml ? `<div class="post-suggestion__tags">${tagsHtml}</div>` : ""}
+    <div class="post-suggestion__stats">
+      <span>❤ Likes</span><span>💬 Comments</span><span>↪ Shares</span>
+      <span class="post-suggestion__note">Simulated preview — actual results vary once published live.</span>
+    </div>
+  `;
 }
 
 function updatePreview() {

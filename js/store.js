@@ -27,10 +27,24 @@ const defaultState = () => ({
   },
 });
 
+/* Performance: persistence + notification are batched.
+   Without this, every keystroke in the search box (or any rapid state
+   change) would synchronously JSON.stringify the entire posts array
+   and hit localStorage on every single change, and re-render the full
+   grid immediately. Batching both into a single microtask/idle window
+   keeps typing and interactions smooth even as the library grows. */
+const PERSIST_DEBOUNCE_MS = 250;
+
 class Store {
   constructor() {
     this._subs = new Set();
     this.state = this._load();
+    this._persistTimer = null;
+    this._emitScheduled = false;
+
+    // Make sure the last pending write always lands, even if the user
+    // closes the tab mid-debounce.
+    window.addEventListener("beforeunload", () => this._flushPersist());
   }
 
   _load() {
@@ -51,7 +65,20 @@ class Store {
     }
   }
 
+  /* Debounced write to localStorage — coalesces bursts of mutations
+     (e.g. typing in the search box, or a multi-platform publish run
+     updating several fields in quick succession) into a single disk
+     write instead of one per change. */
   _persist() {
+    if (this._persistTimer) clearTimeout(this._persistTimer);
+    this._persistTimer = setTimeout(() => this._flushPersist(), PERSIST_DEBOUNCE_MS);
+  }
+
+  _flushPersist() {
+    if (this._persistTimer) {
+      clearTimeout(this._persistTimer);
+      this._persistTimer = null;
+    }
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
     } catch (err) {
@@ -64,9 +91,17 @@ class Store {
     return () => this._subs.delete(fn);
   }
 
+  /* Coalesce synchronous bursts of mutations into a single render pass
+     via microtask batching, so e.g. addPosts() followed immediately by
+     another mutation doesn't trigger two full grid re-renders. */
   _emit() {
     this._persist();
-    this._subs.forEach((fn) => fn(this.state));
+    if (this._emitScheduled) return;
+    this._emitScheduled = true;
+    queueMicrotask(() => {
+      this._emitScheduled = false;
+      this._subs.forEach((fn) => fn(this.state));
+    });
   }
 
   /* ---------- UI mutations ---------- */

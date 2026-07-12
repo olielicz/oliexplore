@@ -60,7 +60,7 @@ export const PLATFORMS = [
     short: "x",
     glyph: "X",
     charLimit: 280,
-    canCollect: false,
+    canCollect: true,
     canPublish: true,
     defaultConnected: false,
     sampleHandle: "@oliexplore",
@@ -68,6 +68,7 @@ export const PLATFORMS = [
       loginLabel: "Username, email or phone",
       loginPlaceholder: "@yourhandle",
       scopes: [
+        "Read your recent posts",
         "Post and repost on your behalf",
         "Read your profile information",
       ],
@@ -98,7 +99,7 @@ export const PLATFORMS = [
     short: "tt",
     glyph: "♪",
     charLimit: 2200,
-    canCollect: false,
+    canCollect: true,
     canPublish: true,
     defaultConnected: false,
     sampleHandle: "@oliexplore",
@@ -106,6 +107,7 @@ export const PLATFORMS = [
       loginLabel: "Email or username",
       loginPlaceholder: "yourusername",
       scopes: [
+        "Read your recent video captions",
         "Publish videos on your behalf",
         "Read your profile information",
       ],
@@ -132,7 +134,13 @@ export const PLATFORMS = [
   },
 ];
 
-export const platformById = (id) => PLATFORMS.find((p) => p.id === id);
+/* O(1) lookup map. platformById() is called on every card render, every
+   chip render, and inside every filter/sort pass — with Array#find that
+   was an O(n) scan per call. With a Map built once at module load it's
+   a constant-time lookup, which matters once the library grows past a
+   handful of posts. */
+const PLATFORM_MAP = new Map(PLATFORMS.map((p) => [p.id, p]));
+export const platformById = (id) => PLATFORM_MAP.get(id);
 
 export const collectablePlatforms = () => PLATFORMS.filter((p) => p.canCollect);
 export const publishablePlatforms = () => PLATFORMS.filter((p) => p.canPublish);
