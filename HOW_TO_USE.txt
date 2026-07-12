@@ -3,12 +3,14 @@
  Collect → Recycle → Publish, across every platform.
 ==========================================================
 
-OliExplore helps you take posts you already have on Facebook and
-Instagram, rewrite them to be catchier and quirkier, and publish them to
-all your social platforms with a single click.
+OliExplore helps you take posts you already have on Facebook, Instagram,
+X, TikTok, and Threads, rewrite them to be catchier and quirkier, and
+publish them to all your social platforms with a single click.
 
 This guide walks you through everything from launching the app to
-publishing your first recycled post.
+publishing your first recycled post. By default everything runs in DEMO
+MODE (fully offline, no setup). To connect your actual accounts and
+publish for real, see LIVE_SETUP.md in this same folder.
 
 
 ----------------------------------------------------------
@@ -67,29 +69,49 @@ there when you come back.
    2. You will see cards for Facebook, Instagram, X, LinkedIn,
       TikTok, and Threads. None are linked at first.
    3. Click "Log in & Connect" on a platform.
-   4. A login window opens (just like signing in on that platform):
-        - Enter your account (email/username) and password.
-        - Review the permissions OliExplore is requesting.
-        - Click "Authorize & Connect".
+   4. What happens next depends on whether you've set up Live API
+      credentials for that platform (see step 2b below):
+        - DEMO (default): a login window opens that mimics signing in
+          — enter any account name, review the permission list, click
+          "Authorize & Connect". Nothing is sent anywhere or stored;
+          this just simulates a connected account so you can try the
+          whole app offline.
+        - LIVE (after setup): a real popup opens that platform's actual
+          sign-in page. Log in for real and approve access — this is
+          the platform's own official OAuth screen, not OliExplore.
    5. After a short authorizing step, the account shows as
-      "Connected" with the handle you signed in as.
+      "Connected" (with a "LIVE" tag if it's a real connection) and the
+      handle you signed in as.
    6. To unlink an account later, click "Disconnect" on its card.
 
 Tip: Only connected accounts can be collected from or published to.
 
-Note: This build SIMULATES the login/authorization so the full flow
-works offline. Your credentials are never sent anywhere or stored.
-Connecting to the real platforms uses their official OAuth sign-in
-(see README.md -> "Architecture notes").
+----------------------------------------------------------
+ 2b. GOING LIVE WITH YOUR REAL ACCOUNTS (OPTIONAL)
+----------------------------------------------------------
+
+   1. Click "⚙ Live API Setup" at the bottom of the sidebar.
+   2. Follow LIVE_SETUP.md to register a free developer app on
+      whichever platform(s) you want to use, and deploy the included
+      proxy (a one-time, ~5 minute step).
+   3. Paste your proxy URL and each platform's Client ID into the
+      Settings panel shown by "⚙ Live API Setup". Save.
+   4. Go back to Connections and click "Log in & Connect" again on
+      that platform -- it now opens the real sign-in screen.
+
+You only need to do this for platforms where you actually want to
+collect/publish for real. Everything else keeps working in demo mode.
 
 
 ----------------------------------------------------------
- 3. COLLECT POSTS FROM FACEBOOK, INSTAGRAM, X & TIKTOK
+ 3. COLLECT POSTS FROM FACEBOOK, INSTAGRAM, X, TIKTOK & THREADS
 ----------------------------------------------------------
 
    1. Click "Collect New Posts" at the bottom of the sidebar.
    2. The app pulls recent posts from your connected accounts
-      (Facebook, Instagram, X, and TikTok all support collecting).
+      (Facebook, Instagram, X, TikTok, and Threads all support
+      collecting). Platforms connected LIVE pull your real recent
+      posts; everything else uses sample data.
    3. A message confirms how many new posts were added.
    4. The new posts appear at the top of your Content Library.
 
@@ -185,10 +207,12 @@ Published posts get a "Published" badge and appear in the Published tab.
      settings.
 
    - LIVE INTEGRATION NOTE: This build ships with simulated platform
-     connections so the full workflow works offline. Connecting to the
-     real Facebook, Instagram, X, etc. APIs requires each platform's
-     developer credentials and approval. The code is already structured
-     for this (see README.md -> "Architecture notes").
+     connections by default so the full workflow works offline with
+     zero setup. Connecting to the real Facebook, Instagram, X, TikTok,
+     or Threads APIs requires each platform's developer credentials and
+     (in some cases) approval -- see LIVE_SETUP.md for the exact steps
+     per platform, including current limitations (X requires a paid API
+     tier; TikTok restricts unaudited apps to private-only posts).
 
 ==========================================================
  Enjoy using OliExplore!

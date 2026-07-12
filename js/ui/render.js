@@ -5,6 +5,8 @@
 
 import { store } from "../store.js";
 import { PLATFORMS, platformById } from "../services/platforms.js";
+import { hasLiveToken, isPlatformConfigured } from "../services/config.js";
+import { supportsLiveOAuth } from "../services/oauth.js";
 import { esc, fmtNum, timeAgo } from "./util.js";
 
 /* ---------- Selection / filtering ---------- */
@@ -194,6 +196,8 @@ export function renderConnectionsView() {
       ${PLATFORMS.map((p) => {
         const c = connections[p.id] || {};
         const on = c.connected;
+        const live = hasLiveToken(p.id);
+        const liveReady = supportsLiveOAuth(p.id) && isPlatformConfigured(p.id);
         const identity = on
           ? `Signed in as ${esc(c.displayName || c.handle || p.sampleHandle)}`
           : "Not linked yet";
@@ -202,7 +206,7 @@ export function renderConnectionsView() {
           <div class="conn-card__top">
             <div class="conn-card__icon">${esc(p.glyph)}</div>
             <div>
-              <div class="conn-card__name">${esc(p.name)}</div>
+              <div class="conn-card__name">${esc(p.name)} ${live ? '<span class="live-pill">LIVE</span>' : ""}</div>
               <div class="conn-card__handle">${identity}</div>
             </div>
           </div>
@@ -216,6 +220,7 @@ export function renderConnectionsView() {
           </div>
           <div style="margin-top:12px;font-size:12px;color:var(--text-faint);">
             ${on && c.connectedAt ? `Linked ${timeAgo(c.connectedAt)} · ` : ""}${p.canCollect ? "Collect + Publish" : "Publish only"} · ${p.charLimit.toLocaleString()} char limit
+            ${!on && liveReady ? " · Live login ready" : ""}
           </div>
         </div>`;
       }).join("")}

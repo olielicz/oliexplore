@@ -221,6 +221,40 @@ export const SEED_POSTS = [
     published: false,
     publishedTo: [],
   },
+  {
+    id: "seed-th-1",
+    platform: "threads",
+    author: "oli.explore",
+    caption:
+      "Threads is where we post the stuff too rough for the grid. Today: what actually broke during launch week.",
+    hashtags: ["buildinpublic", "threads"],
+    mediaEmoji: "🧵",
+    mediaTone: "#232427",
+    likes: 980,
+    comments: 76,
+    shares: 44,
+    collectedAt: now - day * 1.2,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
+  {
+    id: "seed-th-2",
+    platform: "threads",
+    author: "oli.explore",
+    caption:
+      "Hot take: your best content is already posted. Recycling it well beats making something new every day.",
+    hashtags: ["contentstrategy", "hottake"],
+    mediaEmoji: "🔥",
+    mediaTone: "#16171a",
+    likes: 1450,
+    comments: 121,
+    shares: 68,
+    collectedAt: now - day * 3.8,
+    recycled: false,
+    published: false,
+    publishedTo: [],
+  },
 ];
 
 /* A pool used by the collector to simulate "fetching new posts". */
@@ -296,5 +330,21 @@ export const COLLECT_POOL = [
     hashtags: ["milestone", "growth"],
     mediaEmoji: "📈",
     mediaTone: "#16171a",
+  },
+  {
+    platform: "threads",
+    author: "oli.explore",
+    caption: "Nobody tells you that maintaining a product is 10x the work of shipping it.",
+    hashtags: ["indiehackers", "reallife"],
+    mediaEmoji: "🧵",
+    mediaTone: "#3a3c41",
+  },
+  {
+    platform: "threads",
+    author: "oli.explore",
+    caption: "Ask me anything about running a two person team. First 5 questions get a real answer today.",
+    hashtags: ["ama", "smallteam"],
+    mediaEmoji: "💬",
+    mediaTone: "#232427",
   },
 ];
