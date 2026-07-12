@@ -83,6 +83,11 @@ function renderPicker() {
     })
     .join("");
 
+  const captionHtml = esc(target.caption).replace(/\n/g, "<br>");
+  const tagsHtml = (target.hashtags || [])
+    .map((t) => `<span class="post-suggestion__tag">#${esc(t)}</span>`)
+    .join("");
+
   body.innerHTML = `
     <div class="summary">
       <span class="summary__icon">⇪</span>
@@ -90,6 +95,14 @@ function renderPicker() {
         Publishing your ${target.recycled ? "recycled" : ""} post to every selected platform in one shot.
         Toggle any platform off to skip it.
       </span>
+    </div>
+    <div class="field__label" style="margin-bottom:8px;">What will be posted</div>
+    <div class="post-suggestion" style="margin-bottom:18px;">
+      <div class="post-suggestion__head">
+        <span class="post-suggestion__author">@${esc(target.author)}</span>
+      </div>
+      <div class="post-suggestion__body">${captionHtml}</div>
+      ${tagsHtml ? `<div class="post-suggestion__tags">${tagsHtml}</div>` : ""}
     </div>
     <div class="platform-picker" id="picker">${rows}</div>
     <div class="modal__foot" style="margin:18px -22px -22px;">

@@ -123,11 +123,19 @@ function wireGlobalControls() {
   search.value = store.state.ui.query;
   clear.hidden = !search.value;
 
+  // Debounce the search-driven re-render: filtering/sorting/rebuilding
+  // the whole grid on every keystroke is wasted work while the user is
+  // still typing. The input itself stays instantly responsive (native
+  // <input>), only the expensive store update + grid rebuild is delayed.
+  let searchDebounce = null;
   search.addEventListener("input", () => {
     clear.hidden = !search.value;
-    store.setUI({ query: search.value });
+    const value = search.value;
+    if (searchDebounce) clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => store.setUI({ query: value }), 150);
   });
   clear.addEventListener("click", () => {
+    if (searchDebounce) clearTimeout(searchDebounce);
     search.value = "";
     clear.hidden = true;
     store.setUI({ query: "" });

@@ -1,6 +1,6 @@
 # OliExplore — Social Media Studio
 
-OliExplore collects your existing posts from Facebook and Instagram, **recycles** them into
+OliExplore collects your existing posts from Facebook, Instagram, X, and TikTok, **recycles** them into
 catchier, quirkier versions, and lets you **publish to every connected platform with one click**.
 
 It's built as a **zero-dependency, no-build single-page app** (vanilla JS + CSS). Just open it in
@@ -20,7 +20,8 @@ a browser — nothing to install.
 | **Inline Editor** | Edit caption + hashtags with a live preview and a per-platform character budget. |
 | **Publish to All** | One button publishes the post to every connected platform at once, with a live per-platform progress list. Toggle platforms off to skip them. |
 | **Connections** | Connect/disconnect Facebook, Instagram, X, LinkedIn, TikTok, and Threads. |
-| **Collect** | Pulls fresh posts from connected, collectable accounts. |
+| **Collect** | Pulls fresh posts from connected, collectable accounts (Facebook, Instagram, X, and TikTok). |
+| **Recycled post preview** | Before you publish, a styled mockup shows exactly what the recycled post will look like — author, caption, hashtags, and engagement layout — plus the raw text that will be sent. |
 | **Persistence** | Everything is saved to `localStorage`, so your library survives refreshes. |
 | **Views** | Library · Recycled · Published · Connections. |
 | **Responsive** | Works on desktop and mobile (collapsible sidebar). |
@@ -58,7 +59,7 @@ oliexplore/
     ├── engine/recycle.js   # Catchy/quirky transformation engine
     ├── services/
     │   ├── platforms.js    # Platform registry (source of truth)
-    │   ├── collector.js    # Collect adapters (FB/IG) — mocked
+    │   ├── collector.js    # Collect adapters (FB/IG/X/TikTok) — mocked
     │   └── publisher.js    # Publish adapters (all platforms) — mocked
     └── ui/
         ├── render.js       # Stats, chips, grid, connections
@@ -70,15 +71,29 @@ oliexplore/
 
 ---
 
+## Performance notes
+
+- **Debounced persistence.** State writes to `localStorage` are debounced (250ms) and batched
+  instead of firing on every single mutation, so rapid changes (typing, multi-platform publish
+  progress) don't serialize the whole app state repeatedly.
+- **Batched re-renders.** Store subscribers are notified once per microtask instead of once per
+  mutation, so several state changes in the same tick collapse into a single grid re-render.
+- **Debounced search.** The search box updates the store (and re-renders the grid) 150ms after you
+  stop typing, instead of on every keystroke — typing itself stays instant since it's a native input.
+- **O(1) platform lookups.** `platformById()` now uses a `Map` built once at load instead of an
+  `Array.find()` scan, since it's called for every card/chip on every render.
+
 ## Architecture notes (for the next developer)
 
 The app is intentionally structured so real social APIs can be dropped in **without touching the UI**:
 
 - **`services/collector.js`** exposes per-platform `fetch` adapters. They currently return mock
   data from a local pool. To go live, replace an adapter body with a real call
-  (e.g. Facebook Graph `GET /{page-id}/posts`, Instagram Graph `GET /{ig-user-id}/media`).
+  (e.g. Facebook Graph `GET /{page-id}/posts`, Instagram Graph `GET /{ig-user-id}/media`,
+  X `GET /2/users/:id/tweets`, TikTok `GET /v2/video/list/`).
 - **`services/publisher.js`** mirrors that with per-platform `publish` adapters
-  (e.g. `POST /{page-id}/feed`, the Instagram two-step `/media` + `/media_publish`, `POST /2/tweets`).
+  (e.g. `POST /{page-id}/feed`, the Instagram two-step `/media` + `/media_publish`,
+  `POST /2/tweets`, TikTok Content Posting API `POST /v2/post/publish/video/init/`).
 - **`services/platforms.js`** is the single registry the whole app reads from. Add a platform there
   and it automatically appears in chips, connection cards, and the publish picker.
 

@@ -84,11 +84,12 @@ Connecting to the real platforms uses their official OAuth sign-in
 
 
 ----------------------------------------------------------
- 3. COLLECT POSTS FROM FACEBOOK & INSTAGRAM
+ 3. COLLECT POSTS FROM FACEBOOK, INSTAGRAM, X & TIKTOK
 ----------------------------------------------------------
 
    1. Click "Collect New Posts" at the bottom of the sidebar.
-   2. The app pulls recent posts from your connected accounts.
+   2. The app pulls recent posts from your connected accounts
+      (Facebook, Instagram, X, and TikTok all support collecting).
    3. A message confirms how many new posts were added.
    4. The new posts appear at the top of your Content Library.
 
@@ -126,7 +127,11 @@ You can also:
         - The live preview shows exactly how it will look.
         - The character counter warns you if it is too long.
    7. Click "✨ Suggest hashtags" to auto-add relevant tags.
-   8. When done:
+   8. Look at "Suggested recycled post" -> this shows a mockup of
+      exactly what the post will look like (author, caption with line
+      breaks, hashtag pills) plus the raw text that gets sent, so you
+      know precisely what you're about to publish before you do.
+   9. When done:
         - "Save changes" to keep it in your library, OR
         - "Save & Publish ->" to go straight to publishing.
 
@@ -144,7 +149,9 @@ There are two ways to publish:
         (this grabs your top recycled post automatically).
 
 Then:
-   1. A window opens listing every connected platform, all switched ON.
+   1. A window opens showing "What will be posted" (the exact caption
+      and hashtags going out) followed by every connected platform,
+      all switched ON.
    2. Toggle OFF any platform you want to skip.
         - If a caption is too long for a platform, that platform is
           flagged and skipped automatically.
